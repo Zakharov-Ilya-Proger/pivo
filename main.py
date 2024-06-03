@@ -31,18 +31,17 @@ async def log(login: Login):
         raise HTTPException(status_code=404, detail="No such user")
     else:
         token = response.copy()
-        print(token)
         token.update({"role": "student"})
-        print(token)
         response["token"] = create_access_token(token)
-        print(decode_token(token=response["token"]))
         return response
 
 
 @app.get("/subjects")
 async def get_subj(authorization: Annotated[str | None, Header()] = None):
-    print(authorization)
-    id = decode_token(token=authorization.split(" ")[1])["id"]
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Authorization header not found or empty")
+    token = authorization.split(" ")[1]
+    id = decode_token(token=token)["id"]
     response = await get_subjects(id)
     if response:
         return response
@@ -51,7 +50,10 @@ async def get_subj(authorization: Annotated[str | None, Header()] = None):
 
 @app.get("/achievements")
 async def get_achievements(authorization: Annotated[str | None, Header()] = None):
-    id = decode_token(token=authorization.split(" ")[1])["id"]
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Authorization header not found or empty")
+    token = authorization.split(" ")[1]
+    id = decode_token(token=token)["id"]
     response = await get_all_achievements(id)
     if response:
         return response
@@ -60,7 +62,10 @@ async def get_achievements(authorization: Annotated[str | None, Header()] = None
 
 @app.get("/teachers")
 async def get_my_teachers(authorization: Annotated[str | None, Header()] = None):
-    id = decode_token(token=authorization.split(" ")[1])["id"]
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="Authorization header not found or empty")
+    token = authorization.split(" ")[1]
+    id = decode_token(token=token)["id"]
     response = await get_all_my_teachers(id)
     if response:
         return response
