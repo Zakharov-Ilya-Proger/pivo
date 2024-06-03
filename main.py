@@ -1,7 +1,10 @@
-from fastapi import FastAPI, HTTPException
+import os
+from typing import Annotated
 
-from work_with_DB.GetFromBD import getFromDBlogin
-from createJWT import create_access_token
+import uvicorn
+from fastapi import FastAPI, HTTPException, Header
+from work_with_DB.GetFromBD import getFromDBlogin, get_subjects, get_all_achievements, get_all_my_teachers
+from createJWT import create_access_token, decode_token
 from Models.models import Login
 
 app = FastAPI()
@@ -13,8 +16,38 @@ async def log(login: Login):
     if response is False:
         raise HTTPException(status_code=404, detail="No such user")
     else:
-        token = dict(response.copy())
-        token["role"] = "student"
-        resp_token = create_access_token(token)
-        return {"data": response, "token": resp_token}
+        token = response.copy().update({"role": "student"})
+        response["token"] = create_access_token(token)
+        return response
 
+
+@app.get("/subjects")
+async def get_subj(authorization: Annotated[str | None, Header()] = None):
+    id = decode_token(token=authorization)["id"]
+    response = await get_subjects(id)
+    if response:
+        return response
+    raise HTTPException(status_code=404, detail="No data about this user")
+
+
+@app.get("/achievements")
+async def get_achievements(authorization: Annotated[str | None, Header()] = None):
+    id = decode_token(token=authorization)["id"]
+    response = await get_all_achievements(id)
+    if response:
+        return response
+    raise HTTPException(status_code=404, detail="This user has no achievements")
+
+
+@app.get("/teachers")
+async def get_my_teachers(authorization: Annotated[str | None, Header()] = None):
+    id = decode_token(token=authorization)["id"]
+    response = await get_all_my_teachers(id)
+    if response:
+        return response
+    raise HTTPException(status_code=404, detail="This user has no teachers")
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

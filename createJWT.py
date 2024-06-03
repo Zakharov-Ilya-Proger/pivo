@@ -7,8 +7,8 @@ from fastapi.security import OAuth2PasswordBearer
 
 load_dotenv()
 
-SECRET_KEY = "porapitpivo"
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
