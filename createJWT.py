@@ -31,3 +31,4 @@ def decode_token(token: str = Depends(OAuth2PasswordBearer)):
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
