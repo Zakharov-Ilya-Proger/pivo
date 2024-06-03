@@ -35,11 +35,9 @@ async def get_subjects(id):
         WHERE users.id = %s
         GROUP BY users.id''', (id,))
         data = cur.fetchall()
-        print("get_subjects")
-        print(data)
         if data is None:
             return False
-        return {x[0]: [x[1], x[2]]
+        return {x[0]: {"grade": x[1], "semester": x[2]}
                 for x in zip(data[0][0], data[0][1], data[0][2])}
     except (Exception, psycopg2.DatabaseError) as error:
         return {"error": error}
@@ -53,19 +51,16 @@ async def get_all_achievements(id):
     conn = None
     cur = None
     try:
-        print("get_all_achievements")
         conn = psycopg2.connect(**connection)
         cur = conn.cursor()
         cur.execute('''SELECT array_agg("date"), array_agg(type), array_agg("describe")
         FROM achievements
         WHERE achievements.user = %s''', (id,))
         data = cur.fetchall()
-        print("get_all_achievements")
-        print(data)
         if data is None:
             return False
-        return {{"date": x[0], "type": x[1], "describe": x[2]}
-                for x in zip(data[0][0], data[0][1], data[0][2])}
+        return [{"date": x[0], "type": x[1], "describe": x[2]}
+                for x in zip(data[0][0], data[0][1], data[0][2])]
     except (Exception, psycopg2.DatabaseError) as error:
         return {"error": error}
     finally:
@@ -86,12 +81,10 @@ async def get_all_my_teachers(id):
         JOIN subjects sub ON con.subject = sub.id
         WHERE "group" = %s''', (id,))
         data = cur.fetchall()
-        print("get_all_my_teachers")
-        print(data)
         if data is None:
             return False
-        return {{"fio": x[0], "department": x[1], "sub_name": x[2]}
-                for x in zip(data[0][0], data[0][1], data[0][2])}
+        return [{"fio": x[0], "department": x[1], "sub_name": x[2]}
+                for x in zip(data[0][0], data[0][1], data[0][2])]
     except (Exception, psycopg2.DatabaseError) as error:
         return {"error": error}
     finally:
