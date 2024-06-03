@@ -1,0 +1,36 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f9fa;
+  }
+  
+  .login-logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 2rem;
+  }
+  
+  .login-logo {
+    width: 10rem;
+    height: 10rem;
+  }
+  
+  .login-form {
+    width: 20rem;
+  }
+  
+  .login-label {
+    font-weight: bold;
+  }
+  
+  .login-input {
+    margin-bottom: 1rem;
+  }
+  
+  .login-button {
+    width: 100%;
+  }
+  
