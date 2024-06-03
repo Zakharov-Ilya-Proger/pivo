@@ -53,12 +53,12 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               {isLoggedIn && (
-                <>
-                  <Link to="/success" >Успеваемость </Link>
-                  <Link to="/achievements">Личные достижения </Link>
-                  <Link to="/teachers">Преподаватели </Link>
-                  <Link to="/user">Пользователь </Link>
-                </>
+                  <>
+                    <Link to="/success" className="nav-link">Успеваемость</Link>
+                    <Link to="/achievements" className="nav-link">Личные достижения</Link>
+                    <Link to="/teachers" className="nav-link">Преподаватели</Link>
+                    <Link to="/user" className="nav-link">Пользователь</Link>
+                  </>
               )}
             </Nav>
             {isLoggedIn ? (

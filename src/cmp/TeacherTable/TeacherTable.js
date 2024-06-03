@@ -1,50 +1,47 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 
-class TeachersTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      teachers: []
-    };
-  }
+function TeachersTable() {
+    const [data, setData] = useState([]);
 
-  componentDidMount() {
-    axios.get('https://pivo.onrender.com/teachers')
-      .then(res => {
-        this.setState({ teachers: res.data });
-      })
-      .catch(err => console.log(err));
-  }
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-  render() {
-    const { teachers } = this.state;
+        axios.get('https://pivo.onrender.com/teachers')
+            .then(function (response) {
+                console.log(response);
+                setData(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }, []);
 
     return (
-      <div>
-        <h1>Преподаватели</h1>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>ФИО преподавателя</th>
-              <th>Название дисциплины</th>
-              <th>Название кафедры</th>
-            </tr>
-          </thead>
-          <tbody>
-            {teachers.map(teacher => (
-              <tr key={teacher.id}>
-                <td>{teacher.fullName}</td>
-                <td>{teacher.disciplineName}</td>
-                <td>{teacher.departmentName}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+        <div>
+            <h1>Преподаватели</h1>
+            <Table striped bordered hover>
+                <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Кафедра</th>
+                    <th>Предмет</th>
+                </tr>
+                </thead>
+                <tbody>
+                {data.map((item, index) => (
+                    <tr key={index}>
+                        <td>{item.fio}</td> {/* Render the teacher's full name */}
+                        <td>{item.department}</td> {/* Render the teacher's department */}
+                        <td>{item.sub_name}</td> {/* Render the teacher's subject */}
+                    </tr>
+                ))}
+                </tbody>
+            </Table>
+        </div>
     );
-  }
 }
 
 export default TeachersTable;
