@@ -12,10 +12,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Разрешает все источники
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Разрешает все методы
-    allow_headers=["*"],  # Разрешает все заголовки
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -27,10 +27,12 @@ async def ret_pin():
 @app.post("/login")
 async def log(login: Login):
     response = await getFromDBlogin(login)
+    print(response)
     if response is False:
         raise HTTPException(status_code=404, detail="No such user")
     else:
-        token = response.copy().update({"role": "student"})
+        token = response.copy()
+        token.update({"role": "student"})
         response["token"] = create_access_token(token)
         return response
 

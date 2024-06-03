@@ -9,7 +9,9 @@ async def getFromDBlogin(login: Login):
     try:
         conn = psycopg2.connect(**connection)
         cur = conn.cursor()
-        cur.execute(f'SELECT fio, "group", id FROM users WHERE email = {login.email} AND password = {login.password}')
+        cur.execute('''SELECT fio, "group", id 
+        FROM users 
+        WHERE email = %s AND password = %s''', (login.email, login.password,))
         data = cur.fetchone()
         if data is None:
             return False
