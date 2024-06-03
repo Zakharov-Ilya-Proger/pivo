@@ -1,6 +1,6 @@
 from Models.models import Login
 import psycopg2
-from conn import connection
+from work_with_DB.conn import connection
 
 
 async def getFromDBlogin(login: Login):

@@ -1,5 +1,5 @@
 import psycopg2
-from conn import connection
+from work_with_DB.conn import connection
 
 
 async def add_register(reg):
