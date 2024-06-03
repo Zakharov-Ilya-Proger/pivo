@@ -1,13 +1,27 @@
 import os
 from typing import Annotated
-
 import uvicorn
 from fastapi import FastAPI, HTTPException, Header
+from starlette.middleware.cors import CORSMiddleware
 from work_with_DB.GetFromBD import getFromDBlogin, get_subjects, get_all_achievements, get_all_my_teachers
 from createJWT import create_access_token, decode_token
 from Models.models import Login
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Разрешает все источники
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешает все методы
+    allow_headers=["*"],  # Разрешает все заголовки
+)
+
+
+@app.get("/")
+async def ret_pin():
+    return {"message": "We are in work"}
 
 
 @app.post("/login")
